@@ -1,0 +1,27 @@
+<html>
+    <head></head>
+    <body>
+        <h1>Wait for it!</h1>
+        <h2 attach="greeting"></h2>
+    </body>
+</html>
+
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="depictjs.js"></script>
+
+
+<script type="text/javascript">
+
+   attach("greeting",{
+       onLeave:function(element,next){
+           element.fadeOut(function(){
+               next();
+           });
+       },
+       onEnter:function(element){
+           element.fadeIn();
+       }
+   });
+
+</script>
