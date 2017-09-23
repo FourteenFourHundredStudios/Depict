@@ -1,51 +1,35 @@
-
-
-
-//require('../../Settings.js');
-
-
 express = require('express');
 http = require('http');
 app = express();
-bodyParser = require('body-parser');
 depict = require('./depict.js');
 
-app.use(bodyParser.urlencoded())
-app.use(bodyParser.json())
-
-
-app.use(depict.route(app));
 
 app.use('/', express.static('static'));
 
 
-app.get("/",function(req,res){
-    res.sendfile("index.html");
-
-    req.depict.attach({
-        "greeting":"hello world!"
-    });
-
-    setTimeout(function(){
-        req.depict.greeting="Random Number "+Math.random();
-    },2000);
-
-});
-
 server=http.createServer(app);
+
+app.use(depict.route(app,function(){
+    depict.component({
+        name:"card",
+        model:`
+            <div onClick="depict.event('card.changeMessage')">
+                This is the greeting: {{greeting}}
+            </div>
+        `,
+        attach:{
+            "greeting":"hello world!"
+        },
+        events:{
+            changeMessage:function(depict){
+                depict.greeting="goodbye";
+            }
+        }
+    });
+}));
+
 
 server.listen(8000,'localhost',function(){
     console.log('Depict Server started!')
 });
 
-
-
-depict.component({
-    template:"file.html",
-    attach:{
-        "greeting":"hello world!"
-    },
-    route:function(req,res){
-        req.depict.greeting="Random Number "+Math.random();
-    }
-});
