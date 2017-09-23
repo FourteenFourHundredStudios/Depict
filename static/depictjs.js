@@ -19,8 +19,12 @@ depict={
 
  $.post("/depict/start",{},function(results){
      components=results;
-     initDepict();
+     renderDepict();
      longPoll();
+     components.forEach(function(component){
+        $.post("/depict/event",{"eventName":component.name+".onDepict"},function(results){
+        });
+     });
 });
 
 
@@ -32,13 +36,11 @@ function longPoll(){
 }
 
 function handleDepiction(results){
-    
     for(var i=0;i<components.length;i++){
         component=components[i];
         if(component.name==results.component){
             component.attach[results.attachment]=results.value;
-            //console.log(component.attach[results.attachment]);
-            initDepict();
+            renderDepict();
         }
     }
 }
@@ -56,16 +58,19 @@ function depictParse(component,html){
     return $(html).text(text);
 }
 
-function initDepict(init){
-
-
-
+function renderDepict(){
     attachments.forEach(function(el){
         components.forEach(function(component){
        
-            $(el.name).find(component.name).html(function() {
-                return depictParse(component,component.model);
-            });
+            //console.log(component.name);
+            //$.post("/depict/event",{"eventName":component.name+".onDepict"},function(results){
+            
+       
+                $(el.name).find(component.name).html(function() {
+                    return depictParse(component,component.model);
+                });
+
+//            });
 
         });
     });

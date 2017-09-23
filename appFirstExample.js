@@ -13,19 +13,19 @@ app.use(depict.route(app,function(){
     depict.component({
         name:"card",
         model:`
-            <div>
-                look at this number: {{number}}
+            <div onClick="depict.event('card.changeMessage')">
+                This is the greeting: {{greeting}}
             </div>
         `,
         attach:{
-            "number":Math.random()
+            "greeting":"hello world!"
         },
         events:{
-            onDepict:function(depict){
-                setInterval(function(){
-                    depict.number=Math.random();
-                },1000);
-            },
+            changeMessage:function(depict){
+                
+                depict.greeting="goodbye";
+                
+            }
         }
     });
 }));

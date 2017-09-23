@@ -43,6 +43,7 @@ exports.component=function(component){
      register();
      app.post("/depict/start",function(req,res){
          res.send(components);
+
      });
      app.post("/depict/event",function(req,res){
          componentName=req.body.eventName.split(".")[0];
@@ -56,12 +57,16 @@ exports.component=function(component){
 
          res.send("OK");
      });
+
      app.post("/depict",function(req,res){
          eventEmitter.once('depiction', function(val){
             res.send(val);
             res.end();
          });
      });
+
+
+
      return router;
  };
 
