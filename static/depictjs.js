@@ -47,7 +47,7 @@ function handleDepiction(results){
 
 
 function depictParse(component,html){
-    var text = $(component.model).text();
+    var text = $(component.model).html();
     vars=text.match(/{{(.*?)}}/g);
     
     for(var i=0;i<vars.length;i++){
@@ -55,7 +55,7 @@ function depictParse(component,html){
         pEl=el.substring(2,el.length-2);
         text=text.replace(el,component.attach[pEl]);
     }
-    return $(html).text(text);
+    return $(html).html(text);
 }
 
 function renderDepict(){
