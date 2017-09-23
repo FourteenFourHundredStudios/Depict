@@ -22,7 +22,7 @@ function getDepictParam(component){
             },
             set: function(v) {
                 val=v;
-                eventEmitter.emit('depiction',{component:component.name,attachment:key});
+                eventEmitter.emit('depiction',{component:component.name,attachment:key,value:v});
             }
         });
     });

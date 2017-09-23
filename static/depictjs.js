@@ -8,7 +8,7 @@ components=[];
 
 depict={
     attach:function(el){
-        attachments.push(el);
+        attachments.push({name:el,html:$(el).html()});
     },
     event:function(eventName){
         $.post("/depict/event",{"eventName":eventName},function(results){
@@ -32,13 +32,22 @@ function longPoll(){
 }
 
 function handleDepiction(results){
-    console.log(results);
+    
+    for(var i=0;i<components.length;i++){
+        component=components[i];
+        if(component.name==results.component){
+            component.attach[results.attachment]=results.value;
+            //console.log(component.attach[results.attachment]);
+            initDepict();
+        }
+    }
 }
 
 
 function depictParse(component,html){
-    var text = $(html).text();
-    vars=text.match(/{{(.*?)}}/g);   
+    var text = $(component.model).text();
+    vars=text.match(/{{(.*?)}}/g);
+    
     for(var i=0;i<vars.length;i++){
         el=vars[i];
         pEl=el.substring(2,el.length-2);
@@ -47,12 +56,17 @@ function depictParse(component,html){
     return $(html).text(text);
 }
 
-function initDepict(){
+function initDepict(init){
+
+
+
     attachments.forEach(function(el){
         components.forEach(function(component){
-            $(el).find(component.name).replaceWith(function() {
+       
+            $(el.name).find(component.name).html(function() {
                 return depictParse(component,component.model);
             });
+
         });
     });
 }
