@@ -6,33 +6,30 @@ depict = require('./depict.js');
 
 app.use('/', express.static('static'));
 
-
 server=http.createServer(app);
 
 app.use(depict.route(app,function(){
     depict.component({
         name:"card",
         model:`
-            <div>
-                look at this number: {{number}}<br>
-                <i>look at this other number: {{number2}}</i>
+            <div onClick="depict.event(this,'card.changeMessage')">
+                {{message}}
             </div>
         `,
         attach:{
-            "number":Math.random(),
-            "number2":Math.random()
+            "message":"hello world!",
         },
         events:{
-            onDepict:function(depict){
-                setInterval(function(){
-                    depict.number=Math.random();
-                },1000);
-                setInterval(function(){
-                    depict.number2=Math.random();
-                },50);
-            },
+            changeMessage:function(depict){
+                depict.message="goodbye world!";
+            }
         }
     });
+
+    
+
+
+
 }));
 
 

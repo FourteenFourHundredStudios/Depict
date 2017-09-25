@@ -1,5 +1,6 @@
 
 components=[];
+componentList=[];
 
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
@@ -22,7 +23,7 @@ function getDepictParam(component){
             },
             set: function(v) {
                 val=v;
-                eventEmitter.emit('depiction',{component:component.name,attachment:key,value:v});
+                eventEmitter.emit('depiction',{component:component.name,id:component.id,attachment:key,value:v});
             }
         });
     });
@@ -45,13 +46,44 @@ exports.component=function(component){
          res.send(components);
 
      });
+
+     app.post("/depict/loadComponents",function(req,res){
+         componentList=req.body.componentList
+
+      
+         res.send("ok");
+     });
+
      app.post("/depict/event",function(req,res){
          componentName=req.body.eventName.split(".")[0];
          componentEvent=req.body.eventName.split(".")[1];
 
+         /*
          for(var i=0;i<components.length;i++){
              if(components[i].name==componentName){
                  components[i]["events"][componentEvent](getDepictParam(components[i]));
+             }
+         }*/
+
+         console.log(componentList);
+
+         for(var i=0;i<componentList.length;i++){
+             console.log("id",componentList[i].id);
+             if(componentList[i].id===req.body.componentId){
+                //console.log(componentList[i]);
+
+                 for(var j=0;j<components.length;j++){
+                    if(components[j].name==componentName){
+                        componentList[i]["events"]=components[j]["events"];
+                        //console.log(components[i]["events"]);
+                        break;
+                    }
+                }
+
+                 componentList[i]["events"][componentEvent](getDepictParam(componentList[i]));
+                 break;
+                 //console.log(componentList[i]["events"][componentEvent]);
+
              }
          }
 

@@ -1,30 +1,68 @@
 
 
-
-
 attachments=[];
 components=[];
+
+componentObjs=[];
 
 
 depict={
     attach:function(el){
         attachments.push({name:el,html:$(el).html()});
     },
-    event:function(eventName){
-        $.post("/depict/event",{"eventName":eventName},function(results){
+    event:function(obj,eventName){
+        $.post("/depict/event",{"componentId":$(obj).parent().attr("depictId"),"eventName":eventName},function(results){
             
         });
     }
 }
 
+
+
+
  $.post("/depict/start",{},function(results){
-     components=results;
-     renderDepict();
-     longPoll();
-     components.forEach(function(component){
-        $.post("/depict/event",{"eventName":component.name+".onDepict"},function(results){
+    components=results;
+
+
+    
+    attachments.forEach(function(el){
+        components.forEach(function(component){
+            $(el.name).find(component.name).each(function() {
+                
+  
+                newComponent=JSON.parse(JSON.stringify(component));
+
+                id=(Math.random()+"").replace(".","");
+                newComponent.id=id;
+
+                //console.log( newComponent.id);
+
+                $(this).attr("depictId",id);
+                componentObjs.push(newComponent);
+                
+            });
         });
-     });
+    });
+
+
+    console.log(componentObjs);
+
+    $.post("/depict/loadComponents",{componentList:componentObjs},function(results){
+
+        
+
+        renderDepict();
+        longPoll();
+
+        /*
+        onDepic event 
+        components.forEach(function(component){
+            $.post("/depict/event",{"eventName":component.name+".onDepict"},function(results){
+            });
+        });*/
+
+    });
+
 });
 
 
@@ -36,9 +74,10 @@ function longPoll(){
 }
 
 function handleDepiction(results){
-    for(var i=0;i<components.length;i++){
-        component=components[i];
-        if(component.name==results.component){
+    for(var i=0;i<componentObjs.length;i++){
+        component=componentObjs[i];
+        console.log(component);
+        if(component.id==results.id){
             component.attach[results.attachment]=results.value;
             renderDepict();
         }
@@ -46,7 +85,7 @@ function handleDepiction(results){
 }
 
 
-function depictParse(component,html){
+function depictParse(component){
     var text = $(component.model).html();
     vars=text.match(/{{(.*?)}}/g);
     
@@ -55,23 +94,24 @@ function depictParse(component,html){
         pEl=el.substring(2,el.length-2);
         text=text.replace(el,component.attach[pEl]);
     }
-    return $(html).html(text);
+    return $(component.model).html(text);
 }
 
 function renderDepict(){
     attachments.forEach(function(el){
-        components.forEach(function(component){
+        componentObjs.forEach(function(component){
        
-            //console.log(component.name);
-            //$.post("/depict/event",{"eventName":component.name+".onDepict"},function(results){
-            
-       
-                $(el.name).find(component.name).html(function() {
-                    return depictParse(component,component.model);
-                });
 
-//            });
+            $(el.name).find("[depictId="+component.id+"]").html(depictParse(component));
+            
+
+            /*
+            $(el.name).find(component.name).each(function() {
+                console.log("here");
+            });*/
+
 
         });
     });
+    console.log(componentObjs);
 }
