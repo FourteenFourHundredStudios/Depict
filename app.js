@@ -17,27 +17,23 @@ app.use(depict.route(app,function(){
             </div>
         `,
         attach:{
-            "messages":["hi","my","name","is","Marc"],
+            "messages":["look","at","these","object","changes!"],
             "count":0,
             "message":"start"
         },
         events:{
+            onDepict:function(depict){
+                depict.message="Changed with the 'onDepict' event!";
+            },
             changeMessage:function(depict){
-                
                 depict.message=depict.messages[depict.count];
                 depict.count++;
-
                 if(depict.count>=depict.messages.length){
                     depict.count=0;
                 }
-
             }
         }
     });
-
-    
-
-
 
 }));
 

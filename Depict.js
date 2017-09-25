@@ -62,28 +62,21 @@ exports.component=function(component){
          res.send("ok");
      });
 
+  
+
      app.post("/depict/event",function(req,res){
+
+
          componentName=req.body.eventName.split(".")[0];
          componentEvent=req.body.eventName.split(".")[1];
 
-         /*
-         for(var i=0;i<components.length;i++){
-             if(components[i].name==componentName){
-                 components[i]["events"][componentEvent](getDepictParam(components[i]));
-             }
-         }*/
-
-         console.log(componentList);
-
          for(var i=0;i<componentList.length;i++){
-             console.log("id",componentList[i].id);
              if(componentList[i].id===req.body.componentId){
                 //console.log(componentList[i]);
 
                  for(var j=0;j<components.length;j++){
                     if(components[j].name==componentName){
                         componentList[i]["events"]=components[j]["events"];
-                        //console.log(components[i]["events"]);
                         break;
                     }
                 }

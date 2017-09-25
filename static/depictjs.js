@@ -22,21 +22,12 @@ depict={
 
  $.post("/depict/start",{},function(results){
     components=results;
-
-
-    
     attachments.forEach(function(el){
         components.forEach(function(component){
             $(el.name).find(component.name).each(function() {
-                
-  
                 newComponent=JSON.parse(JSON.stringify(component));
-
                 id=(Math.random()+"").replace(".","");
                 newComponent.id=id;
-
-                //console.log( newComponent.id);
-
                 $(this).attr("depictId",id);
                 componentObjs.push(newComponent);
                 
@@ -45,26 +36,29 @@ depict={
     });
 
 
-    console.log(componentObjs);
-
     $.post("/depict/loadComponents",{componentList:componentObjs},function(results){
-
-        
-
         renderDepict();
         longPoll();
-
-        /*
-        onDepic event 
-        components.forEach(function(component){
-            $.post("/depict/event",{"eventName":component.name+".onDepict"},function(results){
-            });
-        });*/
-
+        callEventsAll("onDepict"); 
     });
+    
 
 });
 
+
+function callEventsAll(event){
+    var count=0;
+    function onDepict(){
+        $.post("/depict/event",{"componentId":componentObjs[count].id,"eventName":componentObjs[count].name+"."+event},function(results){
+            if(count>=componentObjs.length){
+                return;
+            }
+            onDepict();
+            count++;
+        });
+    }
+    onDepict();
+}
 
 function longPoll(){
     $.post("/depict",{},function(results){
@@ -76,7 +70,7 @@ function longPoll(){
 function handleDepiction(results){
     for(var i=0;i<componentObjs.length;i++){
         component=componentObjs[i];
-        console.log(component);
+        
         if(component.id==results.id){
             component.attach[results.attachment]=results.value;
             renderDepict();
@@ -105,13 +99,8 @@ function renderDepict(){
             $(el.name).find("[depictId="+component.id+"]").html(depictParse(component));
             
 
-            /*
-            $(el.name).find(component.name).each(function() {
-                console.log("here");
-            });*/
 
 
         });
     });
-    console.log(componentObjs);
 }
