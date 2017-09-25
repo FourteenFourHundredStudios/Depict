@@ -72,7 +72,7 @@ function handleDepiction(results){
         component=componentObjs[i];
         
         if(component.id==results.id){
-            component.attach[results.attachment]=results.value;
+            component.attribute[results.attribute]=results.value;
             renderDepict();
         }
     }
@@ -86,7 +86,7 @@ function depictParse(component){
     for(var i=0;i<vars.length;i++){
         el=vars[i];
         pEl=el.substring(2,el.length-2);
-        text=text.replace(el,component.attach[pEl]);
+        text=text.replace(el,component.attribute[pEl]);
     }
     return $(component.model).html(text);
 }

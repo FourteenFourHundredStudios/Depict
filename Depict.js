@@ -15,8 +15,8 @@ function router(req,res,next){
 
 function getDepictParam(component){
     params={};
-    Object.keys(component.attach).forEach(function(key,index) {
-        var val=component.attach[key];
+    Object.keys(component.attribute).forEach(function(key,index) {
+        var val=component.attribute[key];
         Object.defineProperty(params, key, {
             get: function() {
                 return val;
@@ -26,12 +26,12 @@ function getDepictParam(component){
 
                 for(var i=0;i<componentList.length;i++){
                     if(componentList[i].id===component.id){
-                        componentList[i].attach[key]=v;
+                        componentList[i].attribute[key]=v;
                         break;
                     }
                 }
              
-                eventEmitter.emit('depiction',{component:component.name,id:component.id,attachment:key,value:v});
+                eventEmitter.emit('depiction',{component:component.name,id:component.id,attribute:key,value:v});
             }
         });
     });

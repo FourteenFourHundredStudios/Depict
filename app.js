@@ -16,7 +16,7 @@ app.use(depict.route(app,function(){
                 {{message}}
             </div>
         `,
-        attach:{
+        attribute:{
             "messages":["look","at","these","object","changes!"],
             "count":0,
             "message":"start"
