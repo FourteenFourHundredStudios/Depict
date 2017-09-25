@@ -23,6 +23,14 @@ function getDepictParam(component){
             },
             set: function(v) {
                 val=v;
+
+                for(var i=0;i<componentList.length;i++){
+                    if(componentList[i].id===component.id){
+                        componentList[i].attach[key]=v;
+                        break;
+                    }
+                }
+             
                 eventEmitter.emit('depiction',{component:component.name,id:component.id,attachment:key,value:v});
             }
         });

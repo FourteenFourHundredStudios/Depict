@@ -17,11 +17,20 @@ app.use(depict.route(app,function(){
             </div>
         `,
         attach:{
-            "message":"hello world!",
+            "messages":["hi","my","name","is","Marc"],
+            "count":0,
+            "message":"start"
         },
         events:{
             changeMessage:function(depict){
-                depict.message="goodbye world!";
+                
+                depict.message=depict.messages[depict.count];
+                depict.count++;
+
+                if(depict.count>=depict.messages.length){
+                    depict.count=0;
+                }
+
             }
         }
     });
